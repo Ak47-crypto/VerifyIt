@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const mongourl='mongodb://127.0.0.1:27017/test';
+const mongourl='mongodb+srv://ak47:random1234@cluster0.ebctdyz.mongodb.net/verifyit?retryWrites=true&w=majority';
 async function connectToMongo(){
     try{await mongoose.connect(mongourl)
     console.log('db connectin established')

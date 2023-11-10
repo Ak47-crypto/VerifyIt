@@ -10,7 +10,6 @@ function Home() {
         <div className="row">
           <div className="col">
             <div className="d-flex align-items-center justify-content-center vh-100">
-
               {/* <i class="fa-solid fa-box-open fa-beat fa-2xl"></i> */}
               <img src={box} alt="" />
             </div>
