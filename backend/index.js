@@ -52,19 +52,20 @@ app.post('/login',async(req,res)=>{
     
     //  genetrating jwt token
     const payload = {
-        id: user.id
+        id: user._id
     }
     const token = jwt.sign(payload, secreatKey)
     res.json({ token,"name":user.name,"email":user.email,status:"true" })
 
 })
 app.post('/fetchuser',fetchUser,async(req,res)=>{
-    try{const {userId}=req.body
-    let user = await manufacturer.findOne({ userId })
+    try{const {userId}=req
+    // let user = await manufacturer.findOne({ userId })
+    let user= await manufacturer.find({"_id" :userId})
     const userSendData={
-        name:user.name,
-        email:user.email,
-        address:user.address
+        name:user[0].name,
+        email:user[0].email,
+        address:user[0].address
     }
     res.send(userSendData)}
     catch(err){

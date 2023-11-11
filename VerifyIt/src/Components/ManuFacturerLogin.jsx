@@ -1,51 +1,22 @@
 import React, { useState, useContext, useEffect } from 'react'
 import context from '../context/SiteContext'
+import {ethers} from 'ethers'
 function ManuFacturerLogin() {
-    const {host,alerts,handleAlerts,connection,setConnection} = useContext(context)
+    const { host, alerts, handleAlerts, connection, setConnection } = useContext(context)
     const [data, setData] = useState(null);
-    
+    const [walletAddress,setWalletAddress]=useState('null')
     const [fetchData, setFetchData] = useState(null)
 
     async function fetchDetail() {
-        try{const response = await fetch(`${host}/fetchuser`, {
-            method: 'POST',
-            headers: {
-                "content-type": "application/json",
-                "auth-token": localStorage.getItem('token')
-            }
-        })
-        
-        if (response.status === 200) {
-            const data2 = await response.json()
-            setFetchData(
-                {
-                    name: data2.name,
-                    email: data2.email,
-                    address: data2.address
-                }
-            )
-            setConnection(true)
-        }
-    }
-    catch(err){
-        handleAlerts("Server Down",'warning')
-    }
-    }
-    
-
-    useEffect(() => {
-        async function fetchDetail() {
-            
-            try{
-                if(localStorage.getItem('token')){
-                const response = await fetch(`${host}/fetchuser`, {
+        try {
+            const response = await fetch(`${host}/fetchuser`, {
                 method: 'POST',
                 headers: {
                     "content-type": "application/json",
                     "auth-token": localStorage.getItem('token')
                 }
             })
-            
+
             if (response.status === 200) {
                 const data2 = await response.json()
                 setFetchData(
@@ -56,18 +27,50 @@ function ManuFacturerLogin() {
                     }
                 )
                 setConnection(true)
-            }}
+            }
         }
-        catch(err){
-            handleAlerts("Server Down",'warning')
+        catch (err) {
+            handleAlerts("Server Down", 'warning')
         }
+    }
+
+
+    useEffect(() => {
+        async function fetchDetail() {
+
+            try {
+                if (localStorage.getItem('token')) {
+                    const response = await fetch(`${host}/fetchuser`, {
+                        method: 'POST',
+                        headers: {
+                            "content-type": "application/json",
+                            "auth-token": localStorage.getItem('token')
+                        }
+                    })
+
+                    if (response.status === 200) {
+                        const data2 = await response.json()
+                        setFetchData(
+                            {
+                                name: data2.name,
+                                email: data2.email,
+                                address: data2.address
+                            }
+                        )
+                        setConnection(true)
+                    }
+                }
+            }
+            catch (err) {
+                handleAlerts("Server Down", 'warning')
+            }
         }
         fetchDetail()
 
     }, [])
     const handleInput = (event) => {
         setData({ ...data, [event.target.name]: event.target.value })
-        
+
     }
     const handleSubmit = async (event) => {
         event.preventDefault()
@@ -94,12 +97,47 @@ function ManuFacturerLogin() {
             setConnection(true)
             fetchDetail()
         }
-        else if(response.status===400){
-           
-            handleAlerts(`${data2.result}`,'warning')
+        else if (response.status === 400) {
+
+            handleAlerts(`${data2.result}`, 'warning')
         }
-        
+
     }
+
+    // web3
+    const requestAccount = async () => {
+        
+        if (window.ethereum) {
+            console.log('metamask exist')
+
+            try {
+                const accounts = await window.ethereum.request({
+                    method: "eth_requestAccounts",
+                });
+                
+                setWalletAddress(accounts[0]);
+                if(walletAddress==='null')
+                handleAlerts(`Wallet Connected Successfully`,'success')
+            } catch (error) {
+                handleAlerts(`${error.message}`,'danger')
+            }
+
+        }
+        else
+            console.log('metamask does not exist');
+    }
+
+    async function connectWallet(event) {
+        event.preventDefault();
+        if(typeof window.ethereum !== 'undefined') {
+          await requestAccount();
+    
+        //   const provider = new ethers.providers.Web3Provider(window.ethereum);
+          const provider = new ethers.BrowserProvider(window.ethereum)
+          console.log(provider)
+        }
+      }
+
     if (!connection)
         return (
             <div className="container my-3" style={{ width: "50%" }}>
@@ -133,38 +171,39 @@ function ManuFacturerLogin() {
                                 <h5 className="card-title">Company name : {fetchData && fetchData.name}</h5>
                                 <p className="card-text">Address : {fetchData && fetchData.address}</p>
                                 <p href="#" >Company Email : {fetchData && fetchData.email}</p>
+                                <p>Wallet Address : {walletAddress}</p>
                                 {/* <button className='btn btn-warning'>Add Product </button> */}
                             </div>
                         </div>
                     </div>
-                    <div  className="d-flex justify-content-center my-3">
-                        <form style={{width:"50rem"}}>
+                    <div className="d-flex justify-content-center my-3">
+                        <form onSubmit={connectWallet} style={{ width: "50rem" }}>
 
                             <div className="mb-3">
-                                <label  className="form-label">Serial Number</label>
-                                <input name='sn'  onChange={handleInput} type="text" className="form-control" aria-describedby="emailHelp" />
+                                <label className="form-label">Serial Number</label>
+                                <input name='sn' onChange={handleInput} type="text" className="form-control" aria-describedby="emailHelp" />
                                 {/* <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div> */}
                             </div>
                             <div className="mb-3">
                                 <label className="form-label">Product Name</label>
-                                <input name='productName'  onChange={handleInput} type="text" className="form-control" />
+                                <input name='productName' onChange={handleInput} type="text" className="form-control" />
                             </div>
                             <div className="mb-3 ">
                                 <label className="form-label">Source</label>
 
-                                <input name='source' onChange={handleInput}  type="text" className="form-control" />
+                                <input name='source' onChange={handleInput} type="text" className="form-control" />
 
                             </div>
                             <div className="mb-3 ">
                                 <label className="form-label">Destination</label>
 
-                                <input name='destination' onChange={handleInput}  type="text" className="form-control" />
+                                <input name='destination' onChange={handleInput} type="text" className="form-control" />
 
                             </div>
                             <div className="mb-3 ">
                                 <label className="form-label">Remarks</label>
 
-                                <input name='remarks'  onChange={handleInput} type="text" className="form-control" />
+                                <input name='remarks' onChange={handleInput} type="text" className="form-control" />
 
                             </div>
                             <button type="submit" className="btn btn-primary">Submit</button>
