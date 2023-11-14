@@ -41,10 +41,11 @@ catch(err){
     // console.log(user)
 })
 app.post('/login',async(req,res)=>{
+    try{
     const {email,password}=req.body
     let user = await manufacturer.findOne({ email })
     if (!user) { 
-        return res.status(400).json({ result: "please enter correct credentials" })
+        return res.status(400).json({ result: "User does not exist" })
      }
      const hash = user.password
      const authPass=await bcrypt.compare(password,hash)
@@ -56,6 +57,10 @@ app.post('/login',async(req,res)=>{
     }
     const token = jwt.sign(payload, secreatKey)
     res.json({ token,"name":user.name,"email":user.email,status:"true" })
+}
+catch(err){
+    res.status(500).json({error:"Internal Server Error"})
+}
 
 })
 app.post('/fetchuser',fetchUser,async(req,res)=>{

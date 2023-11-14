@@ -4,6 +4,8 @@ function SiteStates(Props) {
   const host='http://localhost:3000'
   const [alerts,setAlerts]=useState(null);
   const [connection, setConnection] = useState(false)
+  const [height, setHeight] = useState(null)
+
   const handleAlerts=(msg,typo)=>{
     setAlerts({
       message:msg,
@@ -15,7 +17,7 @@ function SiteStates(Props) {
     },3000)
   }
   return (
-    <SiteContext.Provider value={{host,connection,alerts,setConnection,setAlerts,handleAlerts}}>
+    <SiteContext.Provider value={{host,connection,alerts,height,setHeight,setConnection,setAlerts,handleAlerts}}>
         {Props.children}
     </SiteContext.Provider>
   )

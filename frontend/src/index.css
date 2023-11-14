@@ -1,15 +1,16 @@
 
-
-body {
+/* 
+ body {
   margin: 0;
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* place-items: center; */
   
-  min-height: 100vh;
-}
+  
+  min-height: calc(100vh-56px);
+} */
+/*
 #root{
-  /* display: flex;
-  min-height: 100vh; */
-}
-
+  display: flex;
+  min-height: 100vh;
+} */
+/* body{
+  background:#eee;
+} */
