@@ -10,8 +10,9 @@ function SignOut() {
     localStorage.removeItem("email")
     localStorage.removeItem("status")
     setConnection(false)
-    window.location.reload()
+    
     navigate("/")
+    window.location.reload()
     },[]) 
 }
 export default SignOut
