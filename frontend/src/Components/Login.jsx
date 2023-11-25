@@ -25,6 +25,15 @@ function Login() {
   <div className="col-md-8 col-lg-7 col-xl-6 ">
     <div className="card">
       <div className="card-body">
+        <h5 className="card-title">Seller Login</h5>
+        <p className="card-text">Got something to Deleiver</p>
+        <Link to={'/login/sellerLogin'} className="btn btn-primary">Login</Link>
+      </div>
+    </div>
+  </div>
+  <div className="col-md-8 col-lg-7 col-xl-6 ">
+    <div className="card">
+      <div className="card-body">
         <h5 className="card-title">Consumer Login</h5>
         <p className="card-text">Verify your product</p>
         <Link to={'/login/consumerLogin'} className="btn btn-primary">Verify Product</Link>

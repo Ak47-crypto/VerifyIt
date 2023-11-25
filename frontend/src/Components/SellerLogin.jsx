@@ -3,17 +3,18 @@ import context from '../context/SiteContext'
 import { ethers } from 'ethers'
 import Spinner from './Spinner'
 import abi from '../abi/fakeProduct.json'
-import { QRCodeSVG } from 'qrcode.react'
+import QrScanner from 'qr-scanner';
+
 
 function ManuFacturerLogin() {
     const { host, alerts, handleAlerts, connection, setConnection, contractAdd } = useContext(context)
-    const [data, setData] = useState(null);
+    const [data, setData] = useState({});
     const [walletAddress, setWalletAddress] = useState('null')
     const [fetchData, setFetchData] = useState(null)
-    const [blockData, setBlockData] = useState()
+    const [QrData, setQrData] = useState({})
+    const [blockData, setBlockData] = useState({})
+
     const [choice, setChoice] = useState('')
-    const [loadData, setLoadData] = useState(false)
-    const [qrName,setQrName]=useState('')
     const [spinner, setSpinner] = useState({
         sign: null,
         load: null
@@ -27,7 +28,7 @@ function ManuFacturerLogin() {
             backgroundColor: "#f8f9fa"
         },
 
-        widths:{width:"50%"},
+
 
         h: {
             color: "#28a745",
@@ -36,95 +37,84 @@ function ManuFacturerLogin() {
         }
 
     }
-    // qr image download
-    const onImageCownload = () => {
-        const svg = document.getElementById("QRCodeScaled");
-        const svgData = new XMLSerializer().serializeToString(svg);
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        const img = new Image();
-        img.onload = () => {
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
-            const pngFile = canvas.toDataURL("image/png");
-            const downloadLink = document.createElement("a");
-            downloadLink.download = `${qrName?qrName:blockData[1]+blockData[2].replace(/\s/g,'')}`;
-            downloadLink.href = `${pngFile}`;
-            downloadLink.click();
-        };
-        img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
+    const setJsonData = (decodedResult) => {
+        const jsonObj = JSON.parse(decodedResult.data)
+        QrData.sn = jsonObj.sn
+        QrData.name = jsonObj.name
+        // QrData.source = jsonObj.source
+        // QrData.destination = jsonObj.destination
+        // console.log(jsonObj.sn)
+        // data.sn = jsonObj.sn;
+        // data.name = jsonObj.name;
+        setQrData({ ...QrData })
+        // setData({ ...data })
+
+        console.log(QrData)
+    }
+    //qr-scanner
+    const readcode = (event) => {
+        const file = event.target.files[0];
+        console.log(file)
+        if (!file) {
+            return;
+        }
+        QrScanner.scanImage(file, { returnDetailedScanResult: true })
+            .then(result => setJsonData(result))
+            // .catch(e => console.log(e));
+    }
+
+    
+    const [decodedResults, setDecodedResults] = useState([]);
+
+    const onNewScanResult = async (decodedText, decodedResult) => {
+
+        // console.log("App [result]", JSON.parse(decodedResult.result.text));
+        await setJsonData(decodedResult);
+        setDecodedResults(prev => [...prev, decodedResult]);
+
+        // console.log(decodedResults)
     };
 
     const providerWalletAdd = async (event) => {
         event.preventDefault();
         try {
+            // console.log(data)
             const provider = new ethers.BrowserProvider(window.ethereum)
             const signer = await provider.getSigner(walletAddress)
             const setProduct = new ethers.Contract(contractAdd, abi.abi, signer)
-            await setProduct.addProduct(parseInt(data.sn), data.productName, data.source, data.destination)
+            console.log(QrData,blockData)
+            await setProduct.productSeller(parseInt(QrData.sn), QrData.name, blockData.source, blockData.destination)
         }
         catch (err) {
-            if (err.code === 'INVALID_ARGUMENT'&&String(err.value)==='NaN'){
-                handleAlerts(`${err.code}: Serial Number must be a Number`, 'warning')
-            }
-            else 
+            console.log(err)
+            if (err.code === 'INVALID_ARGUMENT')
+                handleAlerts(`${err.code}: Please provide valid inputs`, 'warning')
+            else
                 handleAlerts(`${err.reason}`, 'warning')
         }
-    }
-    // useEffect(() => {
-    //     // console.log(blockData)
-    //     if (blockData && String(blockData[1]) !== '0') {
-    //         if (ref.current) {
-    //             ref.current.style.display = 'block';
-    //         }
-    //         setLoadData(true)
-    //     }
-    //     else {
-    //         if (ref.current) {
-    //             ref.current.style.display = 'none';
-    //         }
-    //         setLoadData(false)
-    //         handleAlerts('Product does not exist ', 'warning')
-    //     }
-    // }, [blockData])
 
+        // setQrData(await setProduct.getProductDetails(parseInt(1)))
+        // console.log(getData)
+    }
     const providerWalletGet = async () => {
         // event.preventDefault();
+        // if (ref.current) {
+        //     ref.current.style.display = 'block';
+        // }
+        // const provider = new ethers.BrowserProvider(window.ethereum)
+        // const signer = await provider.getSigner(walletAddress)
+        // const setProduct = new ethers.Contract('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512', abi.abi, signer)
+        // // await setProduct.addProduct(parseInt(data.sn),data.productName,data.source,data.destination)
 
-
-        const provider = new ethers.BrowserProvider(window.ethereum)
-        const signer = await provider.getSigner(walletAddress)
-        const setProduct = new ethers.Contract(contractAdd, abi.abi, signer)
-        // await setProduct.addProduct(parseInt(data.sn),data.productName,data.source,data.destination)
-
-        // 
-        const getData = await setProduct.getProduct(parseInt(choice))
-        setBlockData(getData)
-        setBlockData((prev)=>{
-            if (prev && String(prev[1]) !== '0') {
-                if (ref.current) {
-                    ref.current.style.display = 'block';
-                }
-                setLoadData(true)
-                setBlockData(getData)
-            }
-            else {
-                if (ref.current) {
-                    ref.current.style.display = 'none';
-                }
-                setLoadData(false)
-                handleAlerts('Product does not exist ', 'warning')
-            }
-        })
-        
-
-
+        // // 
+        // console.log(choice);
+        // setQrData(await setProduct.productSeller(parseInt(choice)))
+        // console.log(QrData[0])
     }
     async function fetchDetails() {
         try {
 
-            const response = await fetch(`${host}/fetchManufacturer`, {
+            const response = await fetch(`${host}/fetchSeller`, {
                 method: 'POST',
                 headers: {
                     "content-type": "application/json",
@@ -153,12 +143,13 @@ function ManuFacturerLogin() {
 
     useEffect(() => {
         async function fetchDetail() {
+
             try {
                 spinner.load = true
                 setSpinner({ ...spinner })
                 if (localStorage.getItem('token')) {
                     setConnection(true)
-                    const response = await fetch(`${host}/fetchManufacturer`, {
+                    const response = await fetch(`${host}/fetchSeller`, {
                         method: 'POST',
                         headers: {
                             "content-type": "application/json",
@@ -176,7 +167,7 @@ function ManuFacturerLogin() {
                             }
                         )
                         setConnection(true)
-                        // console.log(connection);
+                        console.log(connection);
                         spinner.load = false
                         setSpinner({ ...spinner })
                         connectWallet();
@@ -193,6 +184,11 @@ function ManuFacturerLogin() {
     }, [connection])
     const handleInput = (event) => {
         setData({ ...data, [event.target.name]: event.target.value })
+        console.log(data)
+    }
+    const handleInput2 = (event) => {
+        setBlockData({ ...blockData, [event.target.name]: event.target.value })
+        console.log(blockData,event.target.name,event.target.value)
     }
     const handleSubmit = async (event) => {
         event.preventDefault()
@@ -200,7 +196,7 @@ function ManuFacturerLogin() {
         spinner.load = true
         setSpinner({ ...spinner })
         try {
-            const response = await fetch(`${host}/loginManufacturer`, {
+            const response = await fetch(`${host}/loginSeller`, {
                 method: 'POST',
                 headers: {
                     "content-type": "application/json"
@@ -287,7 +283,7 @@ function ManuFacturerLogin() {
                                 className="img-fluid" alt="Phone image" />
                         </div>
                         <div className="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
-                            <h1 className='my-3 text-center'>Manufacturer Login</h1>
+                            <h1 className='my-3 text-center'>Seller Login</h1>
                             <form onSubmit={handleSubmit}>
                                 {/* <!-- Email input --> */}
 
@@ -326,6 +322,7 @@ function ManuFacturerLogin() {
     else if (connection)
         return (
             <>
+
                 {spinner.load ?
                     // <div style={{ minHeight: "calc(100vh - 56px)" }} className="d-flex justify-content-center align-items-center">
                     //     <img src={Spinner} />
@@ -342,66 +339,70 @@ function ManuFacturerLogin() {
                                                 <p className="card-text">Address : {fetchData && fetchData.address}</p>
                                                 <p href="#" >Company Email : {fetchData && fetchData.email}</p>
                                                 <p>Wallet Address : {walletAddress}</p>
-                                                {loadData ? <div>
-                                                    <p>Serial Number : {String(blockData&&blockData[1])}</p>
-                                                    <p>Name : {blockData&&blockData[2]}</p>
-                                                    <p>Destination : {blockData&&blockData[3]}</p>
-                                                    <p>Source : {blockData&&blockData[4]}</p>
+                                                {/* {QrData?<div>
+                                                <p>Serial Number : {String(QrData[0])}</p>
+                                                <p>Name : {QrData[1]}</p>
+                                                <p>Destination : {QrData[2]}</p>
+                                                <p>Source : {QrData[3]}</p>
+                                                </div>:
+                                                <div>
+                                                <label className="form-label">Enter Serial Number</label>
+                                                <input style={infoStyle.box} required name='productName' onChange={(event)=>setChoice(event.target.value)} type="text" className="form-control" /></div>} */}
 
-                                                </div> : <div>
-                                                    {/* <label className="form-label">Enter Serial Number</label>
-                                                    <input style={infoStyle.box} required name='productName' onChange={(event) => setChoice(event.target.value)} type="text" className="form-control" /> */}
-                                                </div>}
-                                                {/* <button ref={ref} className="btn btn-primary" style={{ display: "none" }}>Generate QR</button> */}
-                                                <button ref={ref} style={{ display: "none" }} type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                {/* <button ref={ref}  style={{display:"none"}} type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                                     Generate QR
-                                                </button>
-
-
+                                                </button> */}
+                                                {/* <Html5QrcodePlugin
+                                                    fps={10}
+                                                    qrbox={250}
+                                                    disableFlip={false}
+                                                    qrCodeSuccessCallback={onNewScanResult}
+                                                />
+                                                <ResultContainerPlugin results={decodedResults} /> */}
+                                                {/* <input type="file" onChange={(event) => readcode(event)} /> */}
+                                                <label className="form-label" >Upload QRcode</label>
+                                                <div class="input-group">
+                                                    
+                                                    <input onChange={(event) => readcode(event)} type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload" />
+                                                    {/* <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Button</button> */}
+                                                </div>
                                             </div>
                                             {/* <button className='btn btn-warning'>Add Product </button> */}
                                         </div>
 
                                     </div>
-                                    <div style={infoStyle} className='mt-3'>
-                                        <div className="container">
-                                        <label style={infoStyle.h} className="form-label">Enter Serial Number</label>
-                                        <input style={infoStyle.widths} required name='productName' onChange={(event) => setChoice(event.target.value)} type="text" className="form-control" />
-                                        
-                                    
-                                        <button type="submit" onClick={providerWalletGet} className="mt-3 btn btn-primary">Get Product Details</button>
-                                    
-                                    </div>
-                                        </div>
+                                    {/* <div className=" mt-3 d-flex justify-content-center">
+                                        <button type="submit" onClick={providerWalletGet} className="btn btn-primary">Get Product Details</button>
+                                    </div> */}
                                 </div>
                                 <div className="col-md-4">
                                     <form onSubmit={providerWalletAdd}>
 
                                         <div className="mb-3">
                                             <label className="form-label">Serial Number</label>
-                                            <input style={infoStyle.box} required name='sn' onChange={handleInput} type="text" className="form-control" aria-describedby="emailHelp" />
+                                            <input placeholder='From QRcode' readOnly value={QrData.sn} style={infoStyle.box} required name='sn' type="text" className="form-control" aria-describedby="emailHelp" />
                                             {/* <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div> */}
                                         </div>
                                         <div className="mb-3">
-                                            <label className="form-label">Product Name</label>
-                                            <input style={infoStyle.box} required name='productName' onChange={handleInput} type="text" className="form-control" />
+                                                <label className="form-label">Product Name</label>
+                                            <input placeholder='From QRcode' readOnly value={QrData.name} style={infoStyle.box} required name='productName' type="text" className="form-control" />
                                         </div>
                                         <div className="mb-3 ">
                                             <label className="form-label">Source</label>
 
-                                            <input style={infoStyle.box} required name='source' onChange={handleInput} type="text" className="form-control" />
+                                            <input style={infoStyle.box} required name='source' onChange={handleInput2} type="text" className="form-control" />
 
                                         </div>
                                         <div className="mb-3 ">
                                             <label className="form-label">Destination</label>
 
-                                            <input style={infoStyle.box} required name='destination' onChange={handleInput} type="text" className="form-control" />
+                                            <input style={infoStyle.box} required name='destination' onChange={handleInput2} type="text" className="form-control" />
 
                                         </div>
                                         <div className="mb-3 ">
                                             <label className="form-label">Remarks</label>
 
-                                            <input style={infoStyle.box} required name='remarks' onChange={handleInput} type="text" className="form-control" />
+                                            <input style={infoStyle.box} required name='remarks' onChange={handleInput2} type="text" className="form-control" />
 
                                         </div>
                                         <div className="d-flex justify-content-center">
@@ -413,49 +414,28 @@ function ManuFacturerLogin() {
                             </div>
                         </div>
                         {/* <!-- Modal --> */}
-                        <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div className="modal-dialog">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                        <h5 className="modal-title" id="exampleModalLabel">QR CODE</h5>
-                                        
-                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        {/* <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">QR CODE</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div className="modal-body d-flex justify-content-center">
-                                        {blockData && <QRCodeSVG
-                                            id="QRCodeScaled"
-                                            value={JSON.stringify({
-                                                sn: String(blockData[1]),
-                                                name: blockData[2],
-                                                source: blockData[3],
-                                                destination: blockData[4]
-
-                                            })} />}
-                                        {/* <QRCode
-                                            id="QRCodeScaled"
-                                            size={256}
-                                            style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                                            title="Custom Title"
-                                            value={JSON.stringify({
-                                                sn:String(blockData[1]),
-                                                name:blockData[2],
-                                                source:blockData[3],
-                                                destination:blockData[4]
-                                            })}
-                                            viewBox={`0 0 256 256`}
-                                            
-                                        /> */}
+                                    <div class="modal-body d-flex justify-content-center">
+                                        <QRCodeSVG value={JSON.stringify({
+                                            sn: String(QrData[0]),
+                                            name: QrData[1],
+                                            source: QrData[2],
+                                            destination: QrData[3]
+                                        })} />
                                     </div>
-                                    <div className="modal-footer">
-                                    <label >Qr Code Name</label>
-                                        <input placeholder='Default sn+name' style={{width:"30%"}} required name='destination' onChange={(event)=>setQrName(event.target.value)} type="text" className="form-control mr-3" />
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
-                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="button" onClick={onImageCownload} className="btn btn-success" data-bs-dismiss="modal">Download</button>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 }
 
