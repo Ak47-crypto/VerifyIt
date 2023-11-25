@@ -1,86 +1,76 @@
-# Fake Product Detection System
+# VerifyIt - Fake Product Detection System
 
 ## Overview
 
-This is the repository for the Fake Product Detection System, a solution designed to identify counterfeit products and ensure the authenticity of goods. The system employs the implimentation of blockchain technology, We utilize blockchain to create an immutable record of product information, from manufacturing to distribution. This ledger ensures that each step in the supply chain is recorded and can be verified by stakeholders.
+Welcome to VerifyIt, the Fake Product Detection System designed to identify counterfeit products and ensure the authenticity of goods. Our solution leverages blockchain technology to create an immutable record of product information, securing the supply chain from manufacturing to distribution. The blockchain ledger ensures that each step is transparent, traceable, and verifiable by stakeholders.
 
-Our platform enables users to easily check the authenticity of products by scanning QR codes or entering product details. This ensures a seamless and trustworthy experience for consumers..
+Our platform provides users with a seamless and trustworthy experience, allowing them to easily verify the authenticity of products through QR code scanning or by entering product details.
 
 ## Features
 
-- **Fake Product Detection**: Utilizes [Blockchain] to detect fake products.
-- **Secure Authentication**: Implements secure authentication to ensure authorized access using JWT.
+- **Blockchain Integration**: Utilizes blockchain to create an unalterable record of product information.
+- **Secure Authentication**: Implements JWT-based authentication for secure and authorized access.
 
 ## Demo
 
-Check out the live demo of the system on the following platforms:
+Explore the live demo of VerifyIt on the following platforms:
 
 - [VerifyIt on Vercel](https://verifyit.vercel.app)
 - [VerifyIt on Netlify](https://verifyit.netlify.app)
 
 ## Getting Started
 
-To run the Fake Product Detection System locally, follow these steps:
+To run VerifyIt locally, follow these steps:
 
-1. Clone the repository:
-
-    ```bash
-    git clone https://github.com/your-username/your-repository.git
-    ```
-
-2. Install dependencies:
+1. **Clone the Repository:**
 
     ```bash
-    cd VerifyIt
+    git clone https://github.com/Ak47-crypto/VerifyIt
     ```
-    Backend setup
+
+2. **Install Dependencies:**
 
     ```bash
-    cd backend
-    npm install
-    ```
-   
-    Frontend setup
-    ```
-    cd frontend
+    cd VerifyIt/backend
     npm install
     ```
 
-3. Start the application:
-
-    To run both Backend and Frontend together
     ```bash
-    cd frontend
+    cd VerifyIt/frontend
+    npm install
+    ```
+
+3. **Start the Application:**
+
+    To run both backend and frontend together:
+
+    ```bash
+    cd VerifyIt/frontend
     npm run start
     ```
 
-    Running seperatly
+    To run backend separately:
 
-    Backend
-    ```
-    cd backend
+    ```bash
+    cd VerifyIt/backend
     node index.js
     ```
 
-    Frontend
-    ```
-    cd frontend
+    To run frontend separately:
+
+    ```bash
+    cd VerifyIt/frontend
     npm run dev
     ```
 
-4. Open your browser and navigate to [http://localhost:5173](http://localhost:5173).
+4. **Open Your Browser:**
 
-5. Any Web3 wallet provider, Metamask if officially supported
+    Navigate to [http://localhost:5173](http://localhost:5173).
 
-6. Switch to sepolia test net
+5. **Connect Your Web3 Wallet:**
 
-7. Free sepolia eth can be received from infura faucet [https://www.infura.io/faucet/sepolia](https://www.infura.io/faucet/sepolia)
-
+    VerifyIt supports any Web3 wallet provider, with MetaMask being officially supported. Switch to the Sepolia testnet and receive free Sepolia ETH from the Infura faucet: [Infura Sepolia Faucet](https://www.infura.io/faucet/sepolia).
 
 ## Contributors
 
-- [https://verifyit.netlify.app/about](https://verifyit.netlify.app/about)
-
-
-
-
+- Learn more about the contributors on the [About page](https://verifyit.netlify.app/about).
