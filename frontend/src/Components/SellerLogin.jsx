@@ -328,7 +328,7 @@ function ManuFacturerLogin() {
                     //     <img src={Spinner} />
                     // </div> 
                     <Spinner /> : <div>
-                        <div className="d-flex flex-column justify-content-center my-3 mx-3" style={{ minHeight: "calc(100vh - 152px)" }}>
+                        <div className="d-flex flex-column justify-content-center my-3 mx-3" style={{ minHeight: "calc(100vh - 152px)",opacity:".9" }}>
                             <div className="row">
                                 <div className="col-md-8 p-5" >
                                     <div className="card" style={infoStyle.box} >
@@ -379,28 +379,28 @@ function ManuFacturerLogin() {
                                     <form onSubmit={providerWalletAdd}>
 
                                         <div className="mb-3">
-                                            <label className="form-label">Serial Number</label>
+                                            <label style={infoStyle.h} className="form-label">Serial Number</label>
                                             <input placeholder='From QRcode' readOnly value={QrData.sn} style={infoStyle.box} required name='sn' type="text" className="form-control" aria-describedby="emailHelp" />
                                             {/* <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div> */}
                                         </div>
                                         <div className="mb-3">
-                                                <label className="form-label">Product Name</label>
+                                                <label style={infoStyle.h} className="form-label">Product Name</label>
                                             <input placeholder='From QRcode' readOnly value={QrData.name} style={infoStyle.box} required name='productName' type="text" className="form-control" />
                                         </div>
                                         <div className="mb-3 ">
-                                            <label className="form-label">Source</label>
+                                            <label style={infoStyle.h} className="form-label">Source</label>
 
                                             <input style={infoStyle.box} required name='source' onChange={handleInput2} type="text" className="form-control" />
 
                                         </div>
                                         <div className="mb-3 ">
-                                            <label className="form-label">Destination</label>
+                                            <label style={infoStyle.h} className="form-label">Destination</label>
 
                                             <input style={infoStyle.box} required name='destination' onChange={handleInput2} type="text" className="form-control" />
 
                                         </div>
                                         <div className="mb-3 ">
-                                            <label className="form-label">Remarks</label>
+                                            <label style={infoStyle.h} className="form-label">Remarks</label>
 
                                             <input style={infoStyle.box} required name='remarks' onChange={handleInput2} type="text" className="form-control" />
 

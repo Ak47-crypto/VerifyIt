@@ -4,7 +4,9 @@ import context from '../context/SiteContext'
 function Login() {
   const {connection}=useContext(context)
   const styles={
-    minHeight:"calc(100vh - 152px)"
+    minHeight:"calc(100vh - 152px)",
+    opacity:".6"
+
   }
   const navigate=useNavigate();
   if(localStorage.getItem('status')||connection)
@@ -13,7 +15,7 @@ function Login() {
   return (
     <div className="container my-3" style={styles}>
         <div className="row ">
-  <div className="col-md-8 col-lg-7 col-xl-6 ">
+  <div className="col-md-8 col-lg-7 col-xl-6 my-3">
     <div className="card">
       <div className="card-body">
         <h5 className="card-title">Manufacturing Login</h5>
@@ -22,16 +24,16 @@ function Login() {
       </div>
     </div>
   </div>
-  <div className="col-md-8 col-lg-7 col-xl-6 ">
+  <div className="col-md-8 col-lg-7 col-xl-6 my-3">
     <div className="card">
       <div className="card-body">
         <h5 className="card-title">Seller Login</h5>
-        <p className="card-text">Got something to Deleiver</p>
+        <p className="card-text">Got something to Deliver</p>
         <Link to={'/login/sellerLogin'} className="btn btn-primary">Login</Link>
       </div>
     </div>
   </div>
-  <div className="col-md-8 col-lg-7 col-xl-6 ">
+  <div className="col-md-8 col-lg-7 col-xl-6 my-3">
     <div className="card">
       <div className="card-body">
         <h5 className="card-title">Consumer Login</h5>

@@ -30,8 +30,11 @@ function ManuFacturerLogin() {
         widths:{width:"50%"},
 
         h: {
-            color: "#28a745",
-            fontSize: "24px",
+            color: "#black",
+            sizes:{
+            h1:{fontSize: "30px"},
+            label:{fontSize: "20px"}
+            },
             marginBottom: "20px"
         }
 
@@ -58,6 +61,13 @@ function ManuFacturerLogin() {
 
     const providerWalletAdd = async (event) => {
         event.preventDefault();
+        if (window.ethereum.networkVersion !== 11155111) {
+            try{    
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0xaa36a7' }]
+            });
+          
         try {
             const provider = new ethers.BrowserProvider(window.ethereum)
             const signer = await provider.getSigner(walletAddress)
@@ -71,6 +81,12 @@ function ManuFacturerLogin() {
             else 
                 handleAlerts(`${err.reason}`, 'warning')
         }
+    }catch(err){
+        handleAlerts(`${err.message}`,'warning')
+    }
+    }
+    else
+    handleAlerts('sepolia network not added','danger')
     }
     // useEffect(() => {
     //     // console.log(blockData)
@@ -91,7 +107,12 @@ function ManuFacturerLogin() {
 
     const providerWalletGet = async () => {
         // event.preventDefault();
-
+        if (window.ethereum.networkVersion !== 11155111) {
+            try{    
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0xaa36a7' }]
+            });
 
         const provider = new ethers.BrowserProvider(window.ethereum)
         const signer = await provider.getSigner(walletAddress)
@@ -117,7 +138,10 @@ function ManuFacturerLogin() {
                 handleAlerts('Product does not exist ', 'warning')
             }
         })
-        
+    }catch(err){
+        handleAlerts(`${err.message}`,'warning')
+    }
+    }
 
 
     }
@@ -152,6 +176,19 @@ function ManuFacturerLogin() {
 
 
     useEffect(() => {
+        ethereum.on('accountsChanged', (accounts) => {
+            // Handle the new account
+            setWalletAddress(accounts[0])
+            console.log(accounts[0])
+        })
+        ethereum.on('chainChanged',(chainId)=>{
+            console.log(chainId)
+            if(chainId==='0xaa36a7')
+            handleAlerts('successfully connected to sepolia test network','success')
+            else
+            handleAlerts('please switched to sepolia test network','danger')
+
+        })
         async function fetchDetail() {
             try {
                 spinner.load = true
@@ -189,7 +226,13 @@ function ManuFacturerLogin() {
         }
         fetchDetail()
 
-
+        return () => {
+            ethereum.off('accountsChanged',(accounts) => {
+                // Handle the new account
+                setWalletAddress(accounts[0])
+                console.log(accounts[0])
+            });
+        }
     }, [connection])
     const handleInput = (event) => {
         setData({ ...data, [event.target.name]: event.target.value })
@@ -270,6 +313,13 @@ function ManuFacturerLogin() {
         event && event.preventDefault();
         if (typeof window.ethereum !== 'undefined') {
             await requestAccount();
+        if (window.ethereum.networkVersion !== 11155111) {
+                
+                  await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: '0xaa36a7' }]
+                  });
+                }       
 
             //   const provider = new ethers.providers.Web3Provider(window.ethereum);
             const provider = new ethers.BrowserProvider(window.ethereum)
@@ -331,13 +381,13 @@ function ManuFacturerLogin() {
                     //     <img src={Spinner} />
                     // </div> 
                     <Spinner /> : <div>
-                        <div className="d-flex flex-column justify-content-center my-3 mx-3" style={{ minHeight: "calc(100vh - 152px)" }}>
+                        <div className="d-flex flex-column justify-content-center my-3 mx-3 opacity75" style={{ minHeight: "calc(100vh - 152px)",opacity:".8" }}>
                             <div className="row">
                                 <div className="col-md-8 p-5" >
                                     <div className="card" style={infoStyle.box} >
                                         {/* <img src="..." className="card-img-top" alt="..."/> */}
                                         <div className="card-body" >
-                                            <h5 className="card-title" style={infoStyle.h}>Company name : {fetchData && fetchData.name}</h5>
+                                            <h5 className="card-title" style={infoStyle.h.sizes.h1}>Company name : {fetchData && fetchData.name}</h5>
                                             <div >
                                                 <p className="card-text">Address : {fetchData && fetchData.address}</p>
                                                 <p href="#" >Company Email : {fetchData && fetchData.email}</p>
@@ -365,7 +415,7 @@ function ManuFacturerLogin() {
                                     </div>
                                     <div style={infoStyle} className='mt-3'>
                                         <div className="container">
-                                        <label style={infoStyle.h} className="form-label">Enter Serial Number</label>
+                                        <label style={infoStyle.h.sizes.label} className="form-label">Enter Serial Number</label>
                                         <input style={infoStyle.widths} required name='productName' onChange={(event) => setChoice(event.target.value)} type="text" className="form-control" />
                                         
                                     
@@ -378,28 +428,28 @@ function ManuFacturerLogin() {
                                     <form onSubmit={providerWalletAdd}>
 
                                         <div className="mb-3">
-                                            <label className="form-label">Serial Number</label>
+                                            <label style={infoStyle.h.sizes.label} className="form-label">Serial Number</label>
                                             <input style={infoStyle.box} required name='sn' onChange={handleInput} type="text" className="form-control" aria-describedby="emailHelp" />
                                             {/* <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div> */}
                                         </div>
                                         <div className="mb-3">
-                                            <label className="form-label">Product Name</label>
+                                            <label style={infoStyle.h.sizes.label} className="form-label">Product Name</label>
                                             <input style={infoStyle.box} required name='productName' onChange={handleInput} type="text" className="form-control" />
                                         </div>
                                         <div className="mb-3 ">
-                                            <label className="form-label">Source</label>
+                                            <label style={infoStyle.h.sizes.label} className="form-label">Source</label>
 
                                             <input style={infoStyle.box} required name='source' onChange={handleInput} type="text" className="form-control" />
 
                                         </div>
                                         <div className="mb-3 ">
-                                            <label className="form-label">Destination</label>
+                                            <label style={infoStyle.h.sizes.label} className="form-label">Destination</label>
 
                                             <input style={infoStyle.box} required name='destination' onChange={handleInput} type="text" className="form-control" />
 
                                         </div>
                                         <div className="mb-3 ">
-                                            <label className="form-label">Remarks</label>
+                                            <label style={infoStyle.h.sizes.label} className="form-label">Remarks</label>
 
                                             <input style={infoStyle.box} required name='remarks' onChange={handleInput} type="text" className="form-control" />
 

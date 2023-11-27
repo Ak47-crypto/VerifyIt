@@ -5,7 +5,7 @@ function Alerts() {
     return (
         <>
         {alerts&&
-        <div className='d-flex justify-content-center ' style={{position:"absolute",left:"0",right:"0",margin:"0 auto"}}>
+        <div className='d-flex justify-content-center ' style={{position:"fixed",zIndex:"1",left:"0",right:"0",margin:"0 auto"}}>
             <div className={`alert alert-${alerts.alertType} text-center`} role="alert">
                {alerts.message}
             </div>

@@ -14,3 +14,10 @@
 /* body{
   background:#eee;
 } */
+/* body{
+background-image: url('../5039684.jpg');
+} */
+body{
+  background: rgb(0,15,46);
+  background: linear-gradient(9deg, rgba(0,15,46,1) 0%, rgba(62,239,237,0.3505996148459384) 100%);
+}
