@@ -15,8 +15,8 @@ Our platform provides users with a seamless and trustworthy experience, allowing
 
 Explore the live demo of VerifyIt on the following platforms:
 
-- [VerifyIt on Vercel](https://verifyit.vercel.app)
-- [VerifyIt on Netlify](https://verifyit.netlify.app)
+- [VerifyIt on Vercel(Development Server)](https://verifyit.vercel.app)
+- [VerifyIt on Netlify(Production Server)](https://verifyit.netlify.app)
 
 ## Getting Started
 

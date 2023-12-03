@@ -16,9 +16,6 @@ function ConsumerLogin() {
             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
             backgroundColor: "#f8f9fa"
         },
-
-
-
         h: {
             color: "#28a745",
             fontSize: "24px",
@@ -28,6 +25,7 @@ function ConsumerLogin() {
     }
     const providerManufacturerAdd = async (event) => {
         event.preventDefault();
+        if(typeof window.ethereum!=='undefined'){
         try {
             setProductData(null)
             const provider = new ethers.BrowserProvider(window.ethereum)
@@ -57,6 +55,10 @@ function ConsumerLogin() {
                 handleAlerts(`${a[1]}`, "warning")
             }
         }
+    }
+    else{
+        handleAlerts('Please instal MetaMask','warning')
+    }
 
     }
  // web3

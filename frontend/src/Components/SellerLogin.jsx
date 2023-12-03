@@ -32,9 +32,9 @@ function ManuFacturerLogin() {
 
         h: {
             color: "#black",
-            sizes:{
-            h1:{fontSize: "30px"},
-            label:{fontSize: "20px"}
+            sizes: {
+                h1: { fontSize: "30px" },
+                label: { fontSize: "20px" }
             },
             marginBottom: "20px"
         }
@@ -63,10 +63,10 @@ function ManuFacturerLogin() {
         }
         QrScanner.scanImage(file, { returnDetailedScanResult: true })
             .then(result => setJsonData(result))
-            // .catch(e => console.log(e));
+        // .catch(e => console.log(e));
     }
 
-    
+
     const [decodedResults, setDecodedResults] = useState([]);
 
     const onNewScanResult = async (decodedText, decodedResult) => {
@@ -80,25 +80,42 @@ function ManuFacturerLogin() {
 
     const providerWalletAdd = async (event) => {
         event.preventDefault();
-        try {
-            // console.log(data)
-            const provider = new ethers.BrowserProvider(window.ethereum)
-            const signer = await provider.getSigner(walletAddress)
-            const setProduct = new ethers.Contract(contractAdd, abi.abi, signer)
-            console.log(QrData,blockData)
-            await setProduct.productSeller(parseInt(QrData.sn), QrData.name, blockData.source, blockData.destination)
+        if (typeof window.ethereum !== 'undefined') {
+            if (window.ethereum.networkVersion !== 11155111) {
+                try{    
+                await window.ethereum.request({
+                  method: 'wallet_switchEthereumChain',
+                  params: [{ chainId: '0xaa36a7' }]
+                });
+            try {
+                // console.log(data)
+                const provider = new ethers.BrowserProvider(window.ethereum)
+                const signer = await provider.getSigner(walletAddress)
+                const setProduct = new ethers.Contract(contractAdd, abi.abi, signer)
+                console.log(QrData, blockData)
+                await setProduct.productSeller(parseInt(QrData.sn), QrData.name, blockData.source, blockData.destination)
+            }
+            catch (err) {
+                console.log(err)
+                if (err.code === 'INVALID_ARGUMENT')
+                    handleAlerts(`${err.code}: Please provide valid inputs`, 'warning')
+                else
+                    handleAlerts(`${err.reason}`, 'warning')
+            }
         }
-        catch (err) {
-            console.log(err)
-            if (err.code === 'INVALID_ARGUMENT')
-                handleAlerts(`${err.code}: Please provide valid inputs`, 'warning')
-            else
-                handleAlerts(`${err.reason}`, 'warning')
+        catch(err){
+            handleAlerts(`${err.message}`,'warning')
         }
-
-        // setQrData(await setProduct.getProductDetails(parseInt(1)))
-        // console.log(getData)
+        }
+        else{
+            handleAlerts('Please Switch to Sepolia Testnet','danger')
+        }
+        }
+        else {
+            handleAlerts('Please install MetaMask', 'warning')
+        }
     }
+
     const providerWalletGet = async () => {
         // event.preventDefault();
         // if (ref.current) {
@@ -145,6 +162,23 @@ function ManuFacturerLogin() {
 
 
     useEffect(() => {
+
+        if (typeof window.ethereum !== 'undefined') {
+            ethereum.on('accountsChanged', (accounts) => {
+                // Handle the new account
+                setWalletAddress(accounts[0])
+                console.log(accounts[0])
+            })
+            ethereum.on('chainChanged', (chainId) => {
+                console.log(chainId)
+                if (chainId === '0xaa36a7')
+                    handleAlerts('successfully connected to sepolia test network', 'success')
+                else
+                    handleAlerts('please switched to sepolia test network', 'danger')
+
+            })
+        }
+
         async function fetchDetail() {
 
             try {
@@ -182,7 +216,15 @@ function ManuFacturerLogin() {
             }
         }
         fetchDetail()
-
+        if (typeof window.ethereum !== 'undefined') {
+            return () => {
+                ethereum.off('accountsChanged', (accounts) => {
+                    // Handle the new account
+                    setWalletAddress(accounts[0])
+                    console.log(accounts[0])
+                });
+            }
+        }
 
     }, [connection])
     const handleInput = (event) => {
@@ -191,7 +233,7 @@ function ManuFacturerLogin() {
     }
     const handleInput2 = (event) => {
         setBlockData({ ...blockData, [event.target.name]: event.target.value })
-        console.log(blockData,event.target.name,event.target.value)
+        console.log(blockData, event.target.name, event.target.value)
     }
     const handleSubmit = async (event) => {
         event.preventDefault()
@@ -269,10 +311,19 @@ function ManuFacturerLogin() {
         event && event.preventDefault();
         if (typeof window.ethereum !== 'undefined') {
             await requestAccount();
+            if (window.ethereum.networkVersion !== 11155111) {
 
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: '0xaa36a7' }]
+                });
+            }
             //   const provider = new ethers.providers.Web3Provider(window.ethereum);
             const provider = new ethers.BrowserProvider(window.ethereum)
             // console.log(provider)
+        }
+        else {
+            handleAlerts('Please install MetaMask', 'warning')
         }
     }
 
@@ -331,7 +382,7 @@ function ManuFacturerLogin() {
                     //     <img src={Spinner} />
                     // </div> 
                     <Spinner /> : <div>
-                        <div className="d-flex flex-column justify-content-center my-3 mx-3" style={{ minHeight: "calc(100vh - 152px)",opacity:".9" }}>
+                        <div className="d-flex flex-column justify-content-center my-3 mx-3" style={{ minHeight: "calc(100vh - 152px)", opacity: ".9" }}>
                             <div className="row">
                                 <div className="col-md-8 p-5" >
                                     <div className="card" style={infoStyle.box} >
@@ -365,7 +416,7 @@ function ManuFacturerLogin() {
                                                 {/* <input type="file" onChange={(event) => readcode(event)} /> */}
                                                 <label className="form-label" >Upload QRcode</label>
                                                 <div class="input-group">
-                                                    
+
                                                     <input onChange={(event) => readcode(event)} type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload" />
                                                     {/* <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Button</button> */}
                                                 </div>
@@ -387,7 +438,7 @@ function ManuFacturerLogin() {
                                             {/* <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div> */}
                                         </div>
                                         <div className="mb-3">
-                                                <label style={infoStyle.h.sizes.label} className="form-label">Product Name</label>
+                                            <label style={infoStyle.h.sizes.label} className="form-label">Product Name</label>
                                             <input placeholder='From QRcode' readOnly value={QrData.name} style={infoStyle.box} required name='productName' type="text" className="form-control" />
                                         </div>
                                         <div className="mb-3 ">

@@ -61,6 +61,7 @@ function ManuFacturerLogin() {
 
     const providerWalletAdd = async (event) => {
         event.preventDefault();
+        if(window.ethereum){
         if (window.ethereum.networkVersion !== 11155111) {
             try{    
             await window.ethereum.request({
@@ -88,7 +89,11 @@ function ManuFacturerLogin() {
     else
     handleAlerts('sepolia network not added','danger')
     }
-    // useEffect(() => {
+    else
+{handleAlerts('Please install MetaMask','warning')
+} 
+}
+   // useEffect(() => {
     //     // console.log(blockData)
     //     if (blockData && String(blockData[1]) !== '0') {
     //         if (ref.current) {
@@ -105,8 +110,10 @@ function ManuFacturerLogin() {
     //     }
     // }, [blockData])
 
-    const providerWalletGet = async () => {
-        // event.preventDefault();
+    const providerWalletGet = async (event) => {
+        event.preventDefault();
+
+        if(window.ethereum){
         if (window.ethereum.networkVersion !== 11155111) {
             try{    
             await window.ethereum.request({
@@ -142,7 +149,10 @@ function ManuFacturerLogin() {
         handleAlerts(`${err.message}`,'warning')
     }
     }
-
+        }
+        else{
+            handleAlerts('Please install MetaMask','warning')
+        }
 
     }
     async function fetchDetails() {
@@ -176,6 +186,7 @@ function ManuFacturerLogin() {
 
 
     useEffect(() => {
+        if(window.ethereum){
         ethereum.on('accountsChanged', (accounts) => {
             // Handle the new account
             setWalletAddress(accounts[0])
@@ -188,7 +199,7 @@ function ManuFacturerLogin() {
             else
             handleAlerts('please switched to sepolia test network','danger')
 
-        })
+        })}
         async function fetchDetail() {
             try {
                 spinner.load = true
@@ -225,7 +236,7 @@ function ManuFacturerLogin() {
             }
         }
         fetchDetail()
-
+        if(window.ehereum){
         return () => {
             ethereum.off('accountsChanged',(accounts) => {
                 // Handle the new account
@@ -233,6 +244,7 @@ function ManuFacturerLogin() {
                 console.log(accounts[0])
             });
         }
+    }
     }, [connection])
     const handleInput = (event) => {
         setData({ ...data, [event.target.name]: event.target.value })
@@ -314,17 +326,25 @@ function ManuFacturerLogin() {
         event && event.preventDefault();
         if (typeof window.ethereum !== 'undefined') {
             await requestAccount();
+        
         if (window.ethereum.networkVersion !== 11155111) {
-                
+                try{
                   await window.ethereum.request({
                     method: 'wallet_switchEthereumChain',
                     params: [{ chainId: '0xaa36a7' }]
                   });
+                }
+                catch(err){
+                    handleAlerts(`${err.message}`,'warning')
+                }
                 }       
 
             //   const provider = new ethers.providers.Web3Provider(window.ethereum);
             const provider = new ethers.BrowserProvider(window.ethereum)
             // console.log(provider)
+        }
+        else{
+            handleAlerts('Please install MetaMask','warning')
         }
     }
 
@@ -416,12 +436,13 @@ function ManuFacturerLogin() {
                                     </div>
                                     <div style={infoStyle} className='mt-3'>
                                         <div className="container">
+                                            <form onSubmit={providerWalletGet}>
                                         <label style={infoStyle.h.sizes.label} className="form-label">Enter Serial Number</label>
-                                        <input style={infoStyle.widths} required name='productName' onChange={(event) => setChoice(event.target.value)} type="text" className="form-control" />
+                                        <input  style={infoStyle.widths} required name='productName' onChange={(event) => setChoice(event.target.value)} type="text" className="form-control" />
                                         
                                     
-                                        <button type="submit" onClick={providerWalletGet} className="mt-3 btn btn-primary">Get Product Details</button>
-                                    
+                                        <button type="submit"  className="mt-3 btn btn-primary">Get Product Details</button>
+                                        </form>
                                     </div>
                                         </div>
                                 </div>
