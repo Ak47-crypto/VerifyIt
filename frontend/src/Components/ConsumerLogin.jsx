@@ -100,7 +100,7 @@ function ConsumerLogin() {
 
     }
     return (
-        <div className='mt-5' style={{ minHeight: "calc(100vh - 190px)" }}>
+        <div className='mt-5' style={{ minHeight: "calc(100vh - 180px)" }}>
             <div className='d-flex justify-content-center ' style={{ flexDirection: "column" }}>
                 {walletAddress?<h1 style={{margin:"auto"}}>{walletAddress}</h1>:
             <button className='btn btn-primary' style={{margin:"auto"}} /*onClick={connectWallet}*/>Connect Wallet</button>

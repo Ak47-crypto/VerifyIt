@@ -13,9 +13,9 @@ function Footer() {
     </div>
 
     <ul className="nav col-md-4 justify-content-end list-unstyled d-flex">
-    <i className="fa-brands fa-facebook fa-2xl my-3"></i>
-    <i className="fa-brands fa-x-twitter fa-2xl my-3 mx-3"></i>
-    <i className="fa-brands fa-instagram fa-2xl my-3 me-2"></i>
+    <i className="fa-brands fa-facebook fa-2xl my-3" style={{color:"black"}}></i>
+    <i className="fa-brands fa-x-twitter fa-2xl my-3 mx-3" style={{color:"black"}}></i>
+    <i className="fa-brands fa-instagram fa-2xl my-3 me-2" style={{color:"black"}}></i>
     </ul>
   </footer>
     

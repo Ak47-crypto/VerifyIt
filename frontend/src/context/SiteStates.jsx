@@ -6,6 +6,8 @@ function SiteStates(Props) {
   const [alerts,setAlerts]=useState(null);
   const [connection, setConnection] = useState(false)
   const [height, setHeight] = useState(null)
+  const [ids, setIds] = useState('')
+
   const contractAdd='0xd25eE42139eB3D922B9e14f56e1A958D1f711BdD'
   const handleAlerts=(msg,typo)=>{
     setAlerts({

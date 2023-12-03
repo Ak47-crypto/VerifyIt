@@ -31,8 +31,11 @@ function ManuFacturerLogin() {
 
 
         h: {
-            color: "#28a745",
-            fontSize: "24px",
+            color: "#black",
+            sizes:{
+            h1:{fontSize: "30px"},
+            label:{fontSize: "20px"}
+            },
             marginBottom: "20px"
         }
 
@@ -275,7 +278,7 @@ function ManuFacturerLogin() {
 
     if (!connection)
         return (
-            <section className="" style={{ minHeight: "calc(100vh - 152px)" }}>
+            <section className="" style={{ minHeight: "calc(100vh - 135px)" }}>
                 <div className="container py-5 h-100">
                     <div className="row d-flex align-items-center justify-content-center h-100">
                         <div className="col-md-8 col-lg-7 col-xl-6">
@@ -334,7 +337,7 @@ function ManuFacturerLogin() {
                                     <div className="card" style={infoStyle.box} >
                                         {/* <img src="..." className="card-img-top" alt="..."/> */}
                                         <div className="card-body" >
-                                            <h5 className="card-title" style={infoStyle.h}>Company name : {fetchData && fetchData.name}</h5>
+                                            <h5 className="card-title" style={infoStyle.h.sizes.h1}>Company name : {fetchData && fetchData.name}</h5>
                                             <div >
                                                 <p className="card-text">Address : {fetchData && fetchData.address}</p>
                                                 <p href="#" >Company Email : {fetchData && fetchData.email}</p>
@@ -379,28 +382,28 @@ function ManuFacturerLogin() {
                                     <form onSubmit={providerWalletAdd}>
 
                                         <div className="mb-3">
-                                            <label style={infoStyle.h} className="form-label">Serial Number</label>
+                                            <label style={infoStyle.h.sizes.label} className="form-label">Serial Number</label>
                                             <input placeholder='From QRcode' readOnly value={QrData.sn} style={infoStyle.box} required name='sn' type="text" className="form-control" aria-describedby="emailHelp" />
                                             {/* <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div> */}
                                         </div>
                                         <div className="mb-3">
-                                                <label style={infoStyle.h} className="form-label">Product Name</label>
+                                                <label style={infoStyle.h.sizes.label} className="form-label">Product Name</label>
                                             <input placeholder='From QRcode' readOnly value={QrData.name} style={infoStyle.box} required name='productName' type="text" className="form-control" />
                                         </div>
                                         <div className="mb-3 ">
-                                            <label style={infoStyle.h} className="form-label">Source</label>
+                                            <label style={infoStyle.h.sizes.label} className="form-label">Source</label>
 
                                             <input style={infoStyle.box} required name='source' onChange={handleInput2} type="text" className="form-control" />
 
                                         </div>
                                         <div className="mb-3 ">
-                                            <label style={infoStyle.h} className="form-label">Destination</label>
+                                            <label style={infoStyle.h.sizes.label} className="form-label">Destination</label>
 
                                             <input style={infoStyle.box} required name='destination' onChange={handleInput2} type="text" className="form-control" />
 
                                         </div>
                                         <div className="mb-3 ">
-                                            <label style={infoStyle.h} className="form-label">Remarks</label>
+                                            <label style={infoStyle.h.sizes.label} className="form-label">Remarks</label>
 
                                             <input style={infoStyle.box} required name='remarks' onChange={handleInput2} type="text" className="form-control" />
 
