@@ -12,11 +12,11 @@ const saltRounds = 10;
 const secreatKey='akisdon'
 connectToMongo();
 app.use(cors(
-    // {
-    //     origin: ["https://verifyit.netlify.app","https://verifyit.vercel.app"],
-    //     methods: ["POST", "GET","DELETE","PUT"], 
-    //     credentials: true
-    //   }
+     {
+         origin: ["https://verifyit.netlify.app","https://verifyit.vercel.app"],
+         methods: ["POST", "GET","DELETE","PUT"], 
+         credentials: true
+     }
 ))
 app.use(express.json())
 
