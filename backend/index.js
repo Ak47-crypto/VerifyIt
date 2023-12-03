@@ -13,7 +13,7 @@ const secreatKey='akisdon'
 connectToMongo();
 app.use(cors(
      {
-         origin: ["https://verifyit.netlify.app","https://verifyit.vercel.app","http://localhost:5173"],
+         origin: ["https://verifyit.netlify.app","https://verifyit.vercel.app"],
          methods: ["POST", "GET","DELETE","PUT"], 
          credentials: true
      }
