@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import SiteContext from './SiteContext'
 function SiteStates(Props) {
-  const host='http://localhost:3000'
+  const host='https://verifyit-backend.vercel.app'
   // https://verifyit-backend.vercel.app
   const [alerts,setAlerts]=useState(null);
   const [connection, setConnection] = useState(false)
