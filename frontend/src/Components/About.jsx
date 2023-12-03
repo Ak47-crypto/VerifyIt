@@ -53,9 +53,9 @@ function About() {
         <div class="row justify-content-center">
           <div class="col-12 col-sm-8 col-lg-6">
             {/* <!-- Section Heading--> */}
-            <div class="section_heading text-center wow fadeInUp" data-wow-delay="0.2s" style={{visibility: "visible", animationDelay: "0.2s", animationName: "fadeInUp"}}>
+            <div class=" m-3 section_heading text-center wow fadeInUp" data-wow-delay="0.2s" style={{visibility: "visible", animationDelay: "0.2s", animationName: "fadeInUp"}}>
               <h2 className='text-primary'>Our Creative <span> Team</span></h2>
-              <p>"Empowering Authenticity, Securing Trust: Unveiling Genuine Products through Blockchain Technology."</p>
+              
               <div class="line"></div>
             </div>
           </div>
