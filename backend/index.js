@@ -91,7 +91,7 @@ app.post('/loginManufacturer',async(req,res)=>{
         id: user._id
     }
     const token = jwt.sign(payload, secreatKey)
-    res.json({ token,"name":user.name,"email":user.email,status:"true",ids:"M" })
+    res.json({ token,"name":user.name,"email":user.email,status:"true","ids":"M" })
 }
 catch(err){
     res.status(500).json({error:"Internal Server Error"})
