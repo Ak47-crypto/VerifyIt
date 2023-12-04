@@ -271,6 +271,7 @@ function ManuFacturerLogin() {
             })
             const data2 = await response.json();
             if (response.status === 200) {
+                console.log(data2,data2.ids)
                 localStorage.setItem("token", data2.token)
                 localStorage.setItem("name", data2.name)
                 localStorage.setItem("email", data2.email)
