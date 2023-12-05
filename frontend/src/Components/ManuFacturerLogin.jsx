@@ -435,14 +435,16 @@ function ManuFacturerLogin() {
                                         </div>
 
                                     </div>
-                                    <div style={infoStyle} className='mt-3'>
+                                    <div style={infoStyle} className='mt-5'>
                                         <div className="container">
                                             <form onSubmit={providerWalletGet}>
-                                        <label style={infoStyle.h.sizes.label} className="form-label">Enter Serial Number</label>
-                                        <input  style={infoStyle.widths} required name='productName' onChange={(event) => setChoice(event.target.value)} type="text" className="form-control" />
+                                                <div className=" d-flex flex-column justify-content-center">
+                                        <label style={infoStyle.h.sizes.label} className="form-label text-center">Enter Serial Number</label>
+                                        <input  style={infoStyle.widths} required name='productName' onChange={(event) => setChoice(event.target.value)} type="text" className="form-control m-auto" />
                                         
                                     
-                                        <button type="submit"  className="mt-3 btn btn-primary">Get Product Details</button>
+                                        <button type="submit"  className="mt-3 btn btn-primary m-auto">Get Product Details</button>
+                                        </div>
                                         </form>
                                     </div>
                                         </div>
