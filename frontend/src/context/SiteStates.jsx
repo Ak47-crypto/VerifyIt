@@ -9,7 +9,7 @@ function SiteStates(Props) {
   const [ids, setIds] = useState('')
 
   const contractAdd='0xd25eE42139eB3D922B9e14f56e1A958D1f711BdD'
-  const handleAlerts=(msg,typo)=>{
+  const handleAlerts=(msg,typo,time=3000)=>{
     setAlerts({
       message:msg,
       alertType:typo
@@ -17,7 +17,7 @@ function SiteStates(Props) {
     )
     setTimeout(()=>{
       setAlerts(null)
-    },3000)
+    },time)
   }
   return (
     <SiteContext.Provider value={{host,contractAdd,connection,alerts,height,setHeight,setConnection,setAlerts,handleAlerts}}>
