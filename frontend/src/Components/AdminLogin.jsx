@@ -11,22 +11,57 @@ function AdminLogin() {
   const [walletAddress, setWalletAddress] = useState(null);
   const [addressSM, setAddressSM] = useState(null);
   const [data, setData] = useState(null);
-  const [spinner, setSpinner] = useState(false);
+  const [spinner, setSpinner] = useState({
+    sign: null,
+    load: null,
+  });
 
   // web3
   const providerSellerAdd = async (event) => {
     event.preventDefault();
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const signer = await provider.getSigner(walletAddress.sellerAddress);
-    const addSeller = new ethers.Contract(contractAdd, abi.abi, signer);
-    await addSeller.addSeller(addressSM.sellerAddress);
+    if (typeof window.ethereum != "undefined") {
+      if (window.ethereum.networkVersion !== 11155111) {
+        try {
+          await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: "0xaa36a7" }],
+          });
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          const signer = await provider.getSigner(walletAddress.sellerAddress);
+          const addSeller = new ethers.Contract(contractAdd, abi.abi, signer);
+          await addSeller.addSeller(addressSM.sellerAddress);
+        } catch (err) {
+          if(err.code===4001){
+          handleAlerts(`${err.message}`, "warning");}
+          else
+          handleAlerts(`${err.reason}`, "warning")
+          console.log(err);
+        }
+      }
+    } else handleAlerts("Please install MetaMask", "warning");
   };
   const providerManufacturerAdd = async (event) => {
-    event.preventDefault();
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const signer = await provider.getSigner(walletAddress);
-    const addManufacturer = new ethers.Contract(contractAdd, abi.abi, signer);
-    await addManufacturer.addManufacture(addressSM.manufacturerAddress);
+   event.preventDefault();
+    if (typeof window.ethereum != "undefined") {
+      if (window.ethereum.networkVersion !== 11155111) {
+        try {
+          await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: "0xaa36a7" }],
+          });
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          const signer = await provider.getSigner(walletAddress);
+          const addManufacture = new ethers.Contract(contractAdd, abi.abi, signer);
+          await addManufacture.addManufacture(addressSM.manufacturerAddress);
+        } catch (err) {
+          if(err.code===4001){
+          handleAlerts(`${err.message}`, "warning");}
+          else
+          handleAlerts(`${err.reason}`, "warning")
+          console.log(err);
+        }
+      }
+    } else handleAlerts("Please install MetaMask", "warning");
   };
   const requestAccount = async () => {
     if (window.ethereum) {
@@ -50,7 +85,16 @@ function AdminLogin() {
     event && event.preventDefault();
     if (typeof window.ethereum !== "undefined") {
       await requestAccount();
-
+      if (window.ethereum.networkVersion !== 11155111) {
+        try {
+          await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: "0xaa36a7" }],
+          });
+        } catch (err) {
+          handleAlerts(`${err.message}`, "warning");
+        }
+      }
       //   const provider = new ethers.providers.Web3Provider(window.ethereum);
       const provider = new ethers.BrowserProvider(window.ethereum);
       // console.log(provider)
@@ -69,41 +113,94 @@ function AdminLogin() {
   // backend
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setConnection(true)
-    setSpinner(true);
-    const response = await fetch(`${host}/loginAdmin`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        email: data.email,
-        password: data.password,
-      }),
-    });
-    console.log(response);
-    const data2 = await response.json();
-    if (response.status === 200) {
-      localStorage.setItem("token", data2.token);
-      localStorage.setItem("name", data2.name);
-      localStorage.setItem("email", data2.email);
-      localStorage.setItem("status", data2.status);
-      localStorage.setItem("ids", data2.ids);
-      localStorage.setItem("walletAddress", data2.walletAddress);
-      setConnectionAdmin(true);
-      // setConnection(true);
+    try {
+      spinner.sign = true;
+      setSpinner({ ...spinner });
+
+      const response = await fetch(`${host}/loginAdmin`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
+      console.log(response);
+      const data2 = await response.json();
+      if (response.status === 200) {
+        localStorage.setItem("token", data2.token);
+        localStorage.setItem("name", data2.name);
+        localStorage.setItem("email", data2.email);
+        localStorage.setItem("status", data2.status);
+        localStorage.setItem("ids", data2.ids);
+        localStorage.setItem("walletAddress", data2.walletAddress);
+        connectWallet();
+        setConnection(true);
+        setConnectionAdmin(true);
+        // setConnection(true);
+      } else if (response.status === 400) {
+        handleAlerts(`${data2.result}`, "warning");
+        setConnection(false);
+      } else if (response.status === 401) {
+        handleAlerts(`${data2.result}`, "warning");
+        setConnection(false);
+      } else {
+        handleAlerts(`${data2.result}`, "warning");
+        setConnection(false);
+      }
+      spinner.sign = false;
+
+      setSpinner({ ...spinner });
+    } catch (err) {
+      console.log(err);
+      handleAlerts(`Server Down `, "warning");
+      setConnection(false);
+      spinner.sign = false;
+
+      setSpinner({ ...spinner });
     }
-    else
-    setConnection(false)
-    setSpinner(false);
   };
+  // web3-useEffect
+  useEffect(() => {
+    if (typeof window.ethereum !== "undefined") {
+      const accountsChanging = (accounts) => {
+        // Handle the new account
+        setWalletAddress(accounts[0]);
+        // const add=localStorage.getItem("walletAddress")
+        if (localStorage.getItem("walletAddress") != accounts[0]) {
+          handleAlerts("Please use the contract owner wallet", "danger");
+        } else handleAlerts("contract owner wallet connected", "success");
+        console.log(typeof accounts[0], add);
+      };
+      const chainChanging = (chainId) => {
+        console.log(chainId);
+        if (chainId === "0xaa36a7")
+          handleAlerts(
+            "successfully connected to sepolia test network",
+            "success"
+          );
+        else handleAlerts("please switched to sepolia test network", "danger");
+      };
+
+      ethereum.on("accountsChanged", accountsChanging);
+      ethereum.on("chainChanged", chainChanging);
+      return () => {
+        ethereum.off("accountsChanged", accountsChanging);
+        ethereum.off("chainChainged", chainChanging);
+      };
+    }
+  });
+
   // fetchAdmin
   useEffect(() => {
     async function fetchAdmin() {
       // setConnection(true);
 
-      setSpinner(true);
       if (localStorage.getItem("token") || connection) {
+        spinner.load = true;
+        setSpinner({ ...spinner });
         const response = await fetch(`${host}/fetchAdmin`, {
           method: "POST",
           headers: {
@@ -115,15 +212,17 @@ function AdminLogin() {
 
         if (response.status === 200) {
           // setConnection(true);
-          setSpinner(false);
+          connectWallet()
+          spinner.load = false;
+          setSpinner({ ...spinner });
         }
       }
-    };
+    }
     fetchAdmin();
-  }, []);
+  }, [connection]);
   console.log(spinner);
 
-  if (!connection&&!localStorage.getItem("token"))
+  if (!connection && !localStorage.getItem("token"))
     return (
       <div
         class="m-3 d-flex flex-column align-iteams-center"
@@ -158,7 +257,6 @@ function AdminLogin() {
                       onChange={handleInputLogin}
                       style={{ marginBottom: "20px" }}
                       class="form-control"
-                      
                     />
                   </div>
 
@@ -166,11 +264,30 @@ function AdminLogin() {
                     <div class="col-lg-6 login-btm login-text">
                       {/* <!-- Error Message --> */}
                     </div>
-                    <div class="col-lg-6 login-btm login-button d-flex">
-                      <button type="submit" class="btn btn-outline-primary">
-                        LOGIN
-                      </button>
-                    </div>
+                    {spinner.sign ? (
+                      <div class="col-lg-6 login-btm login-button d-flex">
+                        <button
+                          disabled
+                          type="submit"
+                          className="btn btn-primary  "
+                          style={{ width: "12rem", height: "3rem" }}
+                        >
+                          <div className="spinner-border" role="status">
+                            <span className="sr-only">Loading...</span>
+                          </div>
+                        </button>
+                      </div>
+                    ) : (
+                      <div class="col-lg-6 login-btm login-button d-flex">
+                        <button
+                          style={{ width: "12rem" }}
+                          type="submit"
+                          class="btn btn-lg btn-outline-primary"
+                        >
+                          LOGIN
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </form>
               </div>
@@ -180,53 +297,62 @@ function AdminLogin() {
         </div>
       </div>
     );
-  else if (connection||localStorage.getItem("token"))
+  else if (connection || localStorage.getItem("token"))
     return (
       <div>
-        {spinner ? (
+        {spinner.load ? (
           <Spinner />
         ) : (
-          <div className="container" style={{ height: "calc(100vh - 56px)" }}>
+          <div
+            className="container mt-5 pt-3"
+            style={{ height: "calc(100vh - 56px)" }}
+          >
             <div className="d-flex justify-content-center flex-column">
-              <h1 className="text-center">{walletAddress}</h1>
-              <button
-                className="btn btn-primary"
-                style={{ width: "20%", margin: "auto" }}
-                onClick={connectWallet}
-              >
-                Connect Wallet
-              </button>
+              {localStorage.getItem("walletAddress") == walletAddress ? (
+                <h1 className="text-center">Owner Wallet Address</h1>
+              ) : (
+                <h1 className="text-center">
+                  This is not a Owner Wallet Address
+                </h1>
+              )}
+
+              <h3 className="text-center" style={{whiteSpace:"pre-line",overflow:"hidden"}}>{walletAddress}</h3>
             </div>
             <div className="row">
               <div className="col">
+                <form onSubmit={providerManufacturerAdd}>
                 <label>Enter Manufacturer wallet address to add</label>
                 <input
+                  required
                   onChange={handleInput}
                   type="text"
                   name="manufacturerAddress"
                   className="form-control mt-3"
                 />
                 <button
-                  onClick={providerManufacturerAdd}
+                  type="submit"
                   className="btn btn-primary mt-3"
                 >
                   Add
                 </button>
+                </form>
               </div>
               <div className="col">
+                <form onSubmit={providerSellerAdd}>
                 <label>Enter seller wallet address to add</label>
-                <input
+                <input required
                   onChange={handleInput}
                   type="text"
                   name="sellerAddress"
                   className="form-control mt-3"
                 />
                 <button
-                  onClick={providerSellerAdd}
+                  type="submit"
                   className="btn btn-primary mt-3"
                 >
                   Add
                 </button>
+                </form>
               </div>
             </div>
           </div>

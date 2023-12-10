@@ -10,6 +10,7 @@ function SignOut() {
     localStorage.removeItem("email")
     localStorage.removeItem("status")
     localStorage.removeItem("ids")
+    localStorage.removeItem("walletAddress")
     setConnection(false)
     
     navigate("/")

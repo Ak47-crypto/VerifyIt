@@ -164,7 +164,7 @@ app.post('/loginAdmin',async(req,res)=>{
      }
      const hash = user.password
      const authPass=await bcrypt.compare(password,hash)
-     if(!authPass){ return res.status(400).json({ result: "please enter correct credentials" })}
+     if(!authPass){ return res.status(401).json({ result: "please enter correct credentials" })}
     
     //  genetrating jwt token
     const payload = {

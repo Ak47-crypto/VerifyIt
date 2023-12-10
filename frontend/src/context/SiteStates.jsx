@@ -15,9 +15,13 @@ function SiteStates(Props) {
       alertType:typo
     }
     )
-    setTimeout(()=>{
-      setAlerts(null)
-    },time)
+    const timeOutFun=()=>{
+      setTimeout(()=>{
+        setAlerts(null)
+      },time)
+    }
+    timeOutFun()
+    clearTimeout(timeOutFun)
   }
   return (
     <SiteContext.Provider value={{host,contractAdd,connection,alerts,height,setHeight,setConnection,setAlerts,handleAlerts}}>
