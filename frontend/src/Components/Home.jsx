@@ -69,9 +69,13 @@ function Home() {
                 <Link to={"/login/manufacturerLogin"} className=" btn btn-primary">
                   Go Home
                 </Link>
-              ) : (<Link to={"/login/sellerLogin"} className=" btn btn-primary">
+              ) :localStorage.getItem("ids") === "A"? (<Link to={"/login/adminLogin"} className=" btn btn-primary">
                 Go Home
-              </Link>)}
+              </Link>):(
+                <Link to={"/login/sellerLogin"} className=" btn btn-primary">
+                Go Home
+              </Link>
+              )}
             </div>
           </div>
         </div>
