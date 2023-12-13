@@ -489,8 +489,8 @@ function ManuFacturerLogin() {
                               {String(blockData && blockData[1])}
                             </p>
                             <p>Name : {blockData && blockData[2]}</p>
-                            <p>Destination : {blockData && blockData[3]}</p>
-                            <p>Source : {blockData && blockData[4]}</p>
+                            <p>Source : {blockData && blockData[3]}</p>
+                            <p>Destination : {blockData && blockData[4]}</p>
                           </div>
                         ) : (
                           <div>

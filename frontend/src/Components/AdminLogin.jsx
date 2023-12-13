@@ -197,8 +197,9 @@ function AdminLogin() {
   useEffect(() => {
     async function fetchAdmin() {
       // setConnection(true);
-
+      console.log("useeffect running out of if");
       if (localStorage.getItem("token") || connection) {
+        console.log("useEffect running in if")
         spinner.load = true;
         setSpinner({ ...spinner });
         const response = await fetch(`${host}/fetchAdmin`, {
@@ -211,16 +212,19 @@ function AdminLogin() {
         const data = await response.json();
 
         if (response.status === 200) {
-          // setConnection(true);
+          setConnection(true);
           connectWallet()
           spinner.load = false;
           setSpinner({ ...spinner });
         }
+        else
+        setConnection(false)
+        // spinner.load = false;
+        // setSpinner({ ...spinner });
       }
     }
     fetchAdmin();
   }, [connection]);
-  console.log(spinner);
 
   if (!connection && !localStorage.getItem("token"))
     return (
@@ -297,7 +301,7 @@ function AdminLogin() {
         </div>
       </div>
     );
-  else if (connection || localStorage.getItem("token"))
+  else if (connection && localStorage.getItem("token"))
     return (
       <div>
         {spinner.load ? (
