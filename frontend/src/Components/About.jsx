@@ -72,7 +72,8 @@ function About() {
               {/* <!-- Team Details--> */}
               <div class="single_advisor_details_info">
                 <h6>Ankur Kumar</h6>
-                <p class="designation">Founder &amp; CEO</p>
+                <hr />
+                <p>Founder &amp; CEO</p>
               </div>
             </div>
           </div>
@@ -87,7 +88,8 @@ function About() {
               {/* <!-- Team Details--> */}
               <div class="single_advisor_details_info">
                 <h6>Rajya Lakshmi</h6>
-                <p class="designation">UI/UX Designer &amp; Block Chain Expert</p>
+                <hr />
+                <p class="designation">Block Chain &amp; Backend Developer</p>
               </div>
             </div>
           </div>
@@ -102,6 +104,7 @@ function About() {
               {/* <!-- Team Details--> */}
               <div class="single_advisor_details_info">
                 <h6>Rani Pal</h6>
+                <hr />
                 <p class="designation">Frontend Developer</p>
               </div>
             </div>
@@ -117,6 +120,7 @@ function About() {
               {/* <!-- Team Details--> */}
               <div class="single_advisor_details_info">
                 <h6>Anant Saraswat</h6>
+                <hr />
                 <p class="designation">Marketing Manager</p>
               </div>
             </div>

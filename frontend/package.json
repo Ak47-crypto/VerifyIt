@@ -2,7 +2,7 @@
   "name": "verifyit",
   "private": true,
   "version": "0.0.0",
-  "type": "module",           
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -12,27 +12,27 @@
     "start:backend": "nodemon ../backend/index.js",
     "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\""
   },
-  
   "dependencies": {
     "dotenv": "^16.3.1",
-    "ethers": "^6.8.1",
+    "ethers": "^6.9.0",
     "qr-scanner": "^1.4.2",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.18.0",
+    "react-router-dom": "^6.20.1",
     "react-scripts": "^5.0.1"
   },
   "devDependencies": {
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "@vitejs/plugin-react": "^4.0.3",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-react": "^4.2.1",
     "concurrently": "^8.2.2",
-    "eslint": "^8.45.0",
-    "eslint-plugin-react": "^7.32.2",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.3",
-    "react-error-overlay": "^6.0.9",
-    "vite": "^4.4.5"
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "npm-check-updates": "^16.14.11",
+    "react-error-overlay": "^6.0.11",
+    "vite": "^5.0.8"
   }
 }

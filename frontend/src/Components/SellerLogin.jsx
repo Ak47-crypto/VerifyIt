@@ -233,6 +233,7 @@ function ManuFacturerLogin() {
             setSpinner({ ...spinner });
             connectWallet();
           }
+          
         }
       } catch (err) {
         handleAlerts("Server Down", "warning");

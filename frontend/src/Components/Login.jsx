@@ -27,7 +27,12 @@ function Login() {
   // };
   const navigate = useNavigate();
   if (localStorage.getItem("status") || connection) {
+    if(localStorage.getItem("ids")=="M")
     navigate("/login/manufacturerLogin");
+    else if(localStorage.getItem("ids")=="A")
+    navigate("/login/adminLogin");
+    else
+    navigate("/login/sellerLogin");
   } else
     return (
       <div className="container my-3" style={styles.divHeight}>
